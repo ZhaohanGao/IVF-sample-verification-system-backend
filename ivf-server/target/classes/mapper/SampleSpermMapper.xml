@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.SampleSpermMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.SampleSperm">
+        <id column="ssId" property="ssId" />
+        <result column="tcId" property="tcId" />
+        <result column="position" property="position" />
+        <result column="containerId" property="containerId" />
+        <result column="collectDate" property="collectDate" />
+        <result column="expId" property="expId" />
+        <result column="conditions" property="conditions" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ssId, tcId, position, containerId, collectDate, expId, conditions, comment
+    </sql>
+
+    <!-- 获取所有男性细胞（分页） -->
+    <select id="getSampleSpermByPage" resultMap="BaseResultMap">
+        SELECT
+            ss.*
+        FROM
+            t_sample_sperm ss
+        WHERE
+            true
+        <if test="null!=sampleSperm.ssId">
+            AND ss.ssId = #{sampleSperm.ssId}
+        </if>
+        <if test="null!=sampleSperm.tcId">
+            AND ss.tcId = #{sampleSperm.tcId}
+        </if>
+        <if test="null!=sampleSperm.position">
+            AND ss.position LIKE concat('%',#{sampleSperm.position},'%')
+        </if>
+        <if test="null!=sampleSperm.containerId">
+            AND ss.containerId = #{sampleSperm.containerId}
+        </if>
+        <if test="null!=collectDateScope and 2==collectDateScope.length">
+            AND ss.collectDate BETWEEN #{collectDateScope[0]} AND #{collectDateScope[1]}
+        </if>
+        <if test="null!=sampleSperm.expId">
+            AND ss.expId = #{sampleSperm.expId}
+        </if>
+        ORDER BY
+            ss.ssId
+    </select>
+
+</mapper>

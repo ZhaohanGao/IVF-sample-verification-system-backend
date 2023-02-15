@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.PatientMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.Patient">
+        <id column="ptId" property="ptId" />
+        <result column="citizenId" property="citizenId" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="nativePlace" property="nativePlace" />
+        <result column="address" property="address" />
+        <result column="spouseId" property="spouseId" />
+        <result column="spouse" property="spouse" />
+        <result column="medicalHistory" property="medicalHistory" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ptId, citizenId, name, gender, birthday, nativePlace, address, spouseId, spouse, medicalHistory
+    </sql>
+
+    <!-- 获取所有患者信息（分页） -->
+    <select id="getPatientByPage" resultMap="BaseResultMap">
+        SELECT
+        tp.*
+        FROM
+        t_patient tp
+        WHERE
+        true
+        <if test="null!=patient.ptId">
+            AND tp.ptId = #{patient.ptId}
+        </if>
+        <if test="null!=patient.citizenId">
+            AND tp.citizenId = #{patient.citizenId}
+        </if>
+        <if test="null!=patient.name">
+            AND tp.name LIKE concat('%',#{patient.name},'%')
+        </if>
+        <if test="null!=patient.gender">
+            AND tp.gender = #{patient.gender}
+        </if>
+        <if test="null!=birthdayScope and 2==birthdayScope.length">
+            AND tp.birthday BETWEEN #{birthdayScope[0]} AND #{birthdayScope[1]}
+        </if>
+        <if test="null!=patient.nativePlace">
+            AND tp.nativePlace LIKE concat('%',#{patient.nativePlace},'%')
+        </if>
+        <if test="null!=patient.address">
+            AND tp.address LIKE concat('%',#{patient.address},'%')
+        </if>
+        <if test="null!=patient.spouseId">
+            AND tp.spouseId = #{patient.spouseId}
+        </if>
+        <if test="null!=patient.spouse">
+            AND tp.spouse = #{patient.spouse}
+        </if>
+        ORDER BY
+        tp.ptId
+    </select>
+
+</mapper>

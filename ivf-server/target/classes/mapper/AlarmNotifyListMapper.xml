@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.AlarmNotifyListMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.AlarmNotifyList">
+        <id column="id" property="id" />
+        <result column="adminId" property="adminID" />
+        <result column="name" property="name" />
+        <result column="commType" property="commType" />
+        <result column="commNumber" property="commNumber" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        adminId, name, commType, commNumber
+    </sql>
+
+</mapper>

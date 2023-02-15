@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.CycleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.Cycle">
+        <id column="ccId" property="ccId" />
+        <result column="tcId" property="tcId" />
+        <result column="cNum" property="cNum" />
+        <result column="step1" property="step1" />
+        <result column="step2" property="step2" />
+        <result column="step3" property="step3" />
+        <result column="step4" property="step4" />
+        <result column="step5" property="step5" />
+        <result column="step6" property="step6" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ccId, tcId, ccNum, step1, step2, step3, step4, step5, step6
+    </sql>
+
+    <!-- 获取所有周期（分页） -->
+    <select id="getCycleByPage" resultMap="BaseResultMap">
+        SELECT
+            c.*
+        FROM
+            t_cycle c
+        WHERE
+            true
+        <if test="null!=cycle.ccId">
+            AND c.ccId = #{cycle.ccId}
+        </if>
+        <if test="null!=cycle.tcId">
+            AND c.tcId = #{cycle.tcId}
+        </if>
+        <if test="null!=cycle.ccNum">
+            AND c.ccNum = #{cycle.ccNum}
+        </if>
+        <if test="null!=cycle.step1">
+            AND c.step1 = #{cycle.step1}
+        </if>
+        <if test="null!=cycle.step2">
+            AND c.step2 = #{cycle.step2}
+        </if>
+        <if test="null!=cycle.step3">
+            AND c.step3 = #{cycle.step3}
+        </if>
+        <if test="null!=cycle.step4">
+            AND c.step4 = #{cycle.step4}
+        </if>
+        <if test="null!=cycle.step5">
+            AND c.step5 = #{cycle.step5}
+        </if>
+        <if test="null!=cycle.step6">
+            AND c.step6 = #{cycle.step6}
+        </if>
+        ORDER BY
+            c.ccId
+    </select>
+
+</mapper>

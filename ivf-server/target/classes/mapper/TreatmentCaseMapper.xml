@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.TreatmentCaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.TreatmentCase">
+        <id column="tcId" property="tcId" />
+        <result column="fpatientId" property="fpatientId" />
+        <result column="mpatientId" property="mpatientId" />
+        <result column="beginDate" property="beginDate" />
+        <result column="endDate" property="endDate" />
+        <result column="rfid" property="rfid" />
+        <result column="step" property="step" />
+        <result column="state" property="state" />
+        <result column="cycleNum" property="cycleNum" />
+        <result column="description" property="description" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <resultMap id="ResultMapWithPatientName" type="com.nenu.server.pojo.TreatmentCase" extends="BaseResultMap">
+        <association property="mpatient" javaType="com.nenu.server.pojo.Patient">
+            <id column="mpid" property="ptId"/>
+            <result column="mpname" property="name"/>
+        </association>
+        <association property="fpatient" javaType="com.nenu.server.pojo.Patient">
+            <id column="fpid" property="ptId"/>
+            <result column="fpname" property="name"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        tcId, fpatientId, mpatientId, beginDate, endDate, rfid, step, state, cycleNum, description, comment
+    </sql>
+
+    <!-- 获取所有就诊案例（分页） -->
+    <select id="getTreatmentCaseByPage" resultMap="ResultMapWithPatientName">
+        SELECT
+            tc.*,
+            tfp.ptId as fpid,
+            tfp.`name` as fpname,
+            tmp.ptId as mpid,
+            tmp.`name` as mpname
+        FROM
+            t_treatment_case tc,
+            t_patient tfp,
+            t_patient tmp
+        WHERE
+            tc.fpatientId = tfp.ptId
+            AND tc.mpatientId = tmp.ptId
+        <if test="null!=treatmentCase.tcId">
+            AND tc.tcId = #{treatmentCase.tcId}
+        </if>
+        <if test="null!=treatmentCase.fpatientId">
+            AND tc.fpatientId = #{treatmentCase.fpatientId}
+        </if>
+        <if test="null!=treatmentCase.mpatientId">
+            AND tc.mpatientId = #{treatmentCase.mpatientId}
+        </if>
+        <if test="null!=beginDateScope and 2==beginDateScope.length">
+            AND tc.beginDate BETWEEN #{beginDateScope[0]} AND #{beginDateScope[1]}
+        </if>
+        <if test="null!=endDateScope and 2==endDateScope.length">
+            AND tc.endDate BETWEEN #{endDateScope[0]} AND #{endDateScope[1]}
+        </if>
+        <if test="null!=treatmentCase.rfid">
+            AND tc.rfid = #{treatmentCase.rfid}
+        </if>
+        <if test="null!=treatmentCase.step">
+            AND tc.step = #{treatmentCase.step}
+        </if>
+        <if test="null!=treatmentCase.state">
+            AND tc.state LIKE concat('%',#{treatmentCase.state},'%')
+        </if>
+        <if test="null!=treatmentCase.cycleNum">
+            AND tc.cycleNum = #{treatmentCase.cycleNum}
+        </if>
+        ORDER BY
+            tc.tcId
+    </select>
+</mapper>

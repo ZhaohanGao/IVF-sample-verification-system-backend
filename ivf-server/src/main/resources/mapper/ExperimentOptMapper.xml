@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.ExperimentOptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.ExperimentOpt">
+        <id column="expId" property="expId" />
+        <result column="operandId" property="operandId" />
+        <result column="expType" property="expType" />
+        <result column="expName" property="expName" />
+        <result column="expDate" property="expDate" />
+        <result column="operatorId" property="operatorId" />
+        <result column="cycleNum" property="cycleNum" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        expId, operandId, expType, expName, expDate, operatorId, cycleNum
+    </sql>
+
+    <!-- 获取所有就诊案例（分页） -->
+    <select id="getExperimentOptByPage" resultMap="BaseResultMap">
+        SELECT
+        eo.*
+        FROM
+        t_experiment_opt eo
+        WHERE
+        true
+        <if test="null!=experimentOpt.expId">
+            AND eo.expId = #{experimentOpt.expId}
+        </if>
+        <if test="null!=experimentOpt.operandId">
+            AND eo.operandId = #{experimentOpt.operandId}
+        </if>
+        <if test="null!=experimentOpt.expType">
+            AND eo.expType LIKE concat('%',#{experimentOpt.expType},'%')
+        </if>
+        <if test="null!=experimentOpt.expName">
+            AND eo.expName LIKE concat('%',#{experimentOpt.expName},'%')
+        </if>
+        <if test="null!=expDateScope and 2==expDateScope.length">
+            AND eo.expDate BETWEEN #{expDateScope[0]} AND #{expDateScope[1]}
+        </if>
+        <if test="null!=experimentOpt.operatorId">
+            AND eo.operatorId = #{experimentOpt.operatorId}
+        </if>
+        <if test="null!=experimentOpt.cycleNum">
+            AND eo.cycleNum = #{experimentOpt.cycleNum}
+        </if>
+        ORDER BY
+        eo.expId
+    </select>
+
+</mapper>

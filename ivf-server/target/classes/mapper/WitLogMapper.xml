@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.WitLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.WitLog">
+        <id column="logId" property="logId" />
+        <result column="checkType" property="checkType" />
+        <result column="dateTime" property="dateTime" />
+        <result column="rfid1" property="rfid1" />
+        <result column="rfid1Rectime" property="rfid1Rectime" />
+        <result column="rfid2" property="rfid2" />
+        <result column="rfid2Rectime" property="rfid2Rectime" />
+        <result column="results" property="results" />
+        <result column="resComment" property="resComment" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        logId, checkType, dateTime, rfid1, rfid1Rectime, rfid2, rfid2Rectime, results, resComment
+    </sql>
+
+    <!-- 获取所有日志（分页） -->
+    <select id="getWitLogByPage" resultMap="BaseResultMap">
+        SELECT
+        wl.*
+        FROM
+        t_wit_log wl
+        WHERE
+        true
+        <if test="null!=witLog.logId">
+            AND wl.logId = #{witLog.logId}
+        </if>
+        <if test="null!=witLog.checkType">
+            AND wl.checkType LIKE concat('%',#{witLog.checkType},'%')
+        </if>
+        <if test="null!=dateTimeScope and 2==dateTimeScope.length">
+            AND wl.dateTime BETWEEN #{dateTimeScope[0]} AND #{dateTimeScope[1]}
+        </if>
+        <if test="null!=witLog.rfid1">
+            AND wl.rfid1 = #{witLog.rfid1}
+        </if>
+        <if test="null!=witLog.rfid2">
+            AND wl.rfid2 = #{witLog.rfid2}
+        </if>
+        <if test="null!=rfid1RectimeScope and 2==rfid1RectimeScope.length">
+            AND wl.rfid1Rectime BETWEEN #{rfid1RectimeScope[0]} AND #{rfid1RectimeScope[1]}
+        </if>
+        <if test="null!=rfid2RectimeScope and 2==rfid2RectimeScope.length">
+            AND wl.rfid2Rectime BETWEEN #{rfid2RectimeScope[0]} AND #{rfid2RectimeScope[1]}
+        </if>
+        <if test="null!=witLog.results">
+            AND wl.results LIKE concat('%',#{witLog.results},'%')
+        </if>
+        ORDER BY
+        wl.logId
+    </select>
+
+</mapper>

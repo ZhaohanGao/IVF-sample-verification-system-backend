@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.TreatmentRecMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.TreatmentRec">
+        <id column="trId" property="trId"/>
+        <result column="patientId" property="patientId"/>
+        <result column="docId" property="docId"/>
+        <result column="treatmentProgram" property="treatmentProgram"/>
+        <result column="prescription" property="prescription"/>
+        <result column="trDate" property="trDate"/>
+        <result column="fee" property="fee"/>
+    </resultMap>
+
+    <resultMap id="ResultMapWithName" type="com.nenu.server.pojo.TreatmentRec" extends="BaseResultMap">
+        <association property="patient" javaType="com.nenu.server.pojo.Patient">
+            <id column="pid" property="ptId"/>
+            <result column="pname" property="name"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        trId, patientId, docId, treatmentProgram, prescription, trDate, fee
+    </sql>
+
+    <!-- 获取所有就诊记录（分页） -->
+    <select id="getTreatmentRecByPage" resultMap="ResultMapWithName">
+        SELECT
+            tr.*,
+            tp.ptId as pid,
+            tp.`name` as pname
+        FROM
+            t_treatment_rec tr,
+            t_patient tp
+        WHERE
+            tr.patientId = tp.ptId
+        <if test="null!=treatmentRec.trId">
+            AND tr.trId = #{treatmentRec.trId}
+        </if>
+        <if test="null!=treatmentRec.patientId">
+            AND tr.patientId = #{treatmentRec.patientId}
+        </if>
+        <if test="null!=treatmentRec.docId">
+            AND tr.docId = #{treatmentRec.docId}
+        </if>
+        <if test="null!=treatmentRec.treatmentProgram">
+            AND tr.treatmentProgram LIKE concat('%',#{treatmentRec.treatmentProgram},'%')
+        </if>
+        <if test="null!=treatmentRec.prescription">
+            AND tr.prescription LIKE concat('%',#{treatmentRec.prescription},'%')
+        </if>
+        <if test="null!=trDateScope and 2==trDateScope.length">
+            AND tr.trDate BETWEEN #{trDateScope[0]} AND #{trDateScope[1]}
+        </if>
+        <if test="null!=feeScope1 and null!=feeScope2">
+            AND tr.fee BETWEEN #{feeScope1} AND #{feeScope2}
+        </if>
+        <if test="null==feeScope1 and null!=feeScope2">
+            AND tr.fee <![CDATA[<=]]> #{feeScope2}
+        </if>
+        <if test="null!=feeScope1 and null==feeScope2">
+            AND tr.fee <![CDATA[>=]]> #{feeScope1}
+        </if>
+        ORDER BY
+            tr.trId
+    </select>
+
+    <!--根据操作员id获取就诊记录-->
+    <select id="getTreatmentRecByAdminId" resultMap="BaseResultMap">
+        SELECT
+            tr.*
+        FROM
+            t_treatment_rec tr
+        WHERE
+            tr.patientId = #{id}
+        ORDER BY
+            tr.trId
+    </select>
+
+</mapper>

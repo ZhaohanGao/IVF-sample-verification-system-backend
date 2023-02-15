@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nenu.server.mapper.SampleEggMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.nenu.server.pojo.SampleEgg">
+        <id column="seId" property="seId" />
+        <result column="tcId" property="tcId" />
+        <result column="saveCount" property="saveCount" />
+        <result column="saveLocation" property="saveLocation" />
+        <result column="refStoreTankId" property="refStoreTankId" />
+        <result column="stage" property="stage" />
+        <result column="isOosed" property="isOosed" />
+        <result column="collectDate" property="collectDate" />
+        <result column="expId" property="expId" />
+        <result column="number" property="number" />
+        <result column="conditions" property="conditions" />
+        <result column="comment" property="comment" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        seId, tcId, saveCount, saveLocation, refStoreTankId, stage, isOosed, collectDate, expId, number, conditions, comment
+    </sql>
+
+    <!-- 获取所有女性细胞（分页） -->
+    <select id="getSampleEggByPage" resultMap="BaseResultMap">
+        SELECT
+            se.*
+        FROM
+            t_sample_egg se
+        WHERE
+            true
+        <if test="null!=sampleEgg.seId">
+            AND se.seId = #{sampleEgg.seId}
+        </if>
+        <if test="null!=sampleEgg.tcId">
+            AND se.tcId = #{sampleEgg.tcId}
+        </if>
+        <if test="null!=sampleEgg.saveCount">
+            AND se.saveCount = #{sampleEgg.saveCount}
+        </if>
+        <if test="null!=sampleEgg.saveLocation">
+            AND se.saveLocation = #{sampleEgg.saveLocation}
+        </if>
+        <if test="null!=sampleEgg.refStoreTankId">
+            AND se.refStoreTankId = #{sampleEgg.refStoreTankId}
+        </if>
+        <if test="null!=sampleEgg.stage">
+            AND se.stage = #{sampleEgg.stage}
+        </if>
+        <if test="null!=sampleEgg.isOosed">
+            AND se.isOosed = #{sampleEgg.isOosed}
+        </if>
+        <if test="null!=collectDateScope and 2==collectDateScope.length">
+            AND se.collectDate BETWEEN #{collectDateScope[0]} AND #{collectDateScope[1]}
+        </if>
+        <if test="null!=sampleEgg.expId">
+            AND se.expId = #{sampleEgg.expId}
+        </if>
+        ORDER BY
+            se.seId
+    </select>
+
+</mapper>
